@@ -3,9 +3,10 @@ from addVessels import db_connect
 
 class AddVessels(wx.Frame):
   def __init__(self, title='ADD VESSEL'):
-    wx.Frame.__init__(self, None, title=title, size=(300,200))
+    wx.Frame.__init__(self, None, title=title, size=(300,230))
     self.panel = wx.Panel(self)
-    addVessel = wx.Button(self.panel, -1, "ADD Vessel", (10,130))
+    addVessel = wx.Button(self.panel, -1, "ADD Vessel")
+    showVessels = wx.Button(self.panel, -1, "Show Vessels")
     self.Bind(wx.EVT_BUTTON, self.AddVesselButton, addVessel)
     sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -31,9 +32,14 @@ class AddVessels(wx.Frame):
     labelText3.Add(label3, 0, wx.ALL, 5)
     labelText3.Add(comboBox3, 1, wx.ALL, 5)
 
+    buttonGroup = wx.BoxSizer(wx.HORIZONTAL)
+    buttonGroup.Add(addVessel, 0, wx.ALL, 5)
+    buttonGroup.Add(showVessels, 0, wx.ALL, 5)
+    
     sizer.Add(labelText1, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
     sizer.Add(labelText2, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
     sizer.Add(labelText3, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+    sizer.Add(buttonGroup, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
 
     self.panel.SetSizer(sizer)
     self.panel.SetAutoLayout(True)
