@@ -8,6 +8,7 @@ class AddVessels(wx.Frame):
     addVessel = wx.Button(self.panel, -1, "ADD Vessel")
     showVessels = wx.Button(self.panel, -1, "Show Vessels")
     self.Bind(wx.EVT_BUTTON, self.AddVesselButton, addVessel)
+    self.Bind(wx.EVT_BUTTON, self.ShowVesselsButton, showVessels )
     sizer = wx.BoxSizer(wx.VERTICAL)
 
     labelText1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -54,6 +55,11 @@ class AddVessels(wx.Frame):
     self.groupNumber.Remove(0,-1)
     self.vessel.Remove(0,-1)
     self.imo.Remove(0,-1)
+  
+  def ShowVesselsButton(self,evt):
+    grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250), wx.NO_BORDER | wx.WANTS_CHARS)
+    grid.CreateGrid(50, 20)
+    return grid
     
    
 if __name__ == '__main__':
