@@ -1,14 +1,23 @@
 import wx
+import wx.aui as aui
+import wx.grid
 from addVessels import db_connect
 
 class AddVessels(wx.Frame):
-  def __init__(self, title='ADD VESSEL'):
+  def __init__(self,id=-1,title='ADD VESSEL'):
     wx.Frame.__init__(self, None, title=title, size=(300,230))
+    #Vessels LIST frame manager
+    self.x = 0
+    self._mgr = aui.AuiManager()
+    self._mgr.SetManagedWindow(self)
+    self._mgr.Update()
+    self.Bind(wx.EVT_CLOSE, self.OnClose)
+    #Vessels LIST frame manager END
     self.panel = wx.Panel(self)
     addVessel = wx.Button(self.panel, -1, "ADD Vessel")
     showVessels = wx.Button(self.panel, -1, "Show Vessels")
     self.Bind(wx.EVT_BUTTON, self.AddVesselButton, addVessel)
-    self.Bind(wx.EVT_BUTTON, self.ShowVesselsButton, showVessels )
+    self.Bind(wx.EVT_BUTTON, self.OnCreateGrid, showVessels )
     sizer = wx.BoxSizer(wx.VERTICAL)
 
     labelText1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -60,7 +69,31 @@ class AddVessels(wx.Frame):
     grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250), wx.NO_BORDER | wx.WANTS_CHARS)
     grid.CreateGrid(50, 20)
     return grid
-    
+#Vessels LIST
+  def OnClose(self,event):
+    self._mgr.UnInit()
+    del self._mgr
+    self.Destroy()
+
+  def GetStartPosition(self):
+    self.x = self.x + 20
+    x = self.x
+    pt = self.ClientToScreen(wx.Point(0, 0))
+    return wx.Point(pt.x + x, pt.y + x)
+
+
+  def OnCreateGrid(self, event):
+    self._mgr.AddPane(self.CreateGrid(), aui.AuiPaneInfo().
+                      Caption("Vessels").
+                      Float().FloatingPosition(self.GetStartPosition()).
+                      FloatingSize(wx.Size(300, 200)).CloseButton(True).MaximizeButton(True))
+    self._mgr.Update()
+  
+  def CreateGrid(self):
+    grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250),wx.NO_BORDER | wx.WANTS_CHARS)
+    grid.CreateGrid(50, 20)
+    return grid
+#Vessels LIST END
    
 if __name__ == '__main__':
   app = wx.App(False)
