@@ -11,4 +11,12 @@ def db_connect(data={}):
     shipsPossition.insert_one(data)
   except pymongo.errors.DuplicateKeyError:
     print 'Dublicate ', data.get('vesselName')
-db_connect()
+  client.close()
+
+def db_get_vessels():
+  client = pymongo.MongoClient("mongodb://localhost:27017/")
+  brieseDb = client['shipsBriese']
+  shipsPossition = brieseDb['shipsData']
+  vessels = shipsPossition.find()
+  client.close()
+  return vessels

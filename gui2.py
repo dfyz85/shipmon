@@ -1,7 +1,7 @@
 import wx
 import wx.aui as aui
 import wx.grid
-from addVessels import db_connect
+from addVessels import db_connect, db_get_vessels
 
 class AddVessels(wx.Frame):
   def __init__(self,id=-1,title='ADD VESSEL'):
@@ -17,7 +17,7 @@ class AddVessels(wx.Frame):
     addVessel = wx.Button(self.panel, -1, "ADD Vessel")
     showVessels = wx.Button(self.panel, -1, "Show Vessels")
     self.Bind(wx.EVT_BUTTON, self.AddVesselButton, addVessel)
-    self.Bind(wx.EVT_BUTTON, self.OnCreateGrid, showVessels )
+    self.Bind(wx.EVT_BUTTON, self.ShowVesselsButton, showVessels )
     sizer = wx.BoxSizer(wx.VERTICAL)
 
     labelText1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -37,7 +37,7 @@ class AddVessels(wx.Frame):
     labelText3 = wx.BoxSizer(wx.HORIZONTAL)
     sampleList = ['','1','2','3','4','5','7','8','9']
     label3 = wx.StaticText(self.panel, -1, "Group number:")
-    comboBox3 = wx.ComboBox(self.panel, value='',size=wx.DefaultSize, choices=sampleList,style=wx.CB_DROPDOWN|wx.CB_READONLY)
+    comboBox3 = wx.ComboBox(self.panel, value='',size=wx.DefaultSize, choices=sampleList,style=wx.CB_DROPDOWN)
     self.groupNumber = comboBox3  
     labelText3.Add(label3, 0, wx.ALL, 5)
     labelText3.Add(comboBox3, 1, wx.ALL, 5)
@@ -65,10 +65,10 @@ class AddVessels(wx.Frame):
     self.vessel.Remove(0,-1)
     self.imo.Remove(0,-1)
   
-  def ShowVesselsButton(self,evt):
-    grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250), wx.NO_BORDER | wx.WANTS_CHARS)
-    grid.CreateGrid(50, 20)
-    return grid
+  #def ShowVesselsButton(self,evt):
+   # grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250), wx.NO_BORDER | wx.WANTS_CHARS)
+    #grid.CreateGrid(3, 121)
+    #return grid
 #Vessels LIST
   def OnClose(self,event):
     self._mgr.UnInit()
@@ -82,7 +82,7 @@ class AddVessels(wx.Frame):
     return wx.Point(pt.x + x, pt.y + x)
 
 
-  def OnCreateGrid(self, event):
+  def ShowVesselsButton(self, event):
     self._mgr.AddPane(self.CreateGrid(), aui.AuiPaneInfo().
                       Caption("Vessels").
                       Float().FloatingPosition(self.GetStartPosition()).
@@ -91,7 +91,9 @@ class AddVessels(wx.Frame):
   
   def CreateGrid(self):
     grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250),wx.NO_BORDER | wx.WANTS_CHARS)
-    grid.CreateGrid(50, 20)
+    grid.CreateGrid(121, 3)
+    for i in db_get_vessels():
+      print i
     return grid
 #Vessels LIST END
    
