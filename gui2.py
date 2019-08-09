@@ -1,6 +1,6 @@
 import wx
 import wx.aui as aui
-import wx.grid
+import wx.dataview as dv
 from addVessels import db_connect, db_get_vessels
 
 class AddVessels(wx.Frame):
@@ -65,11 +65,7 @@ class AddVessels(wx.Frame):
     self.vessel.Remove(0,-1)
     self.imo.Remove(0,-1)
   
-  #def ShowVesselsButton(self,evt):
-   # grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250), wx.NO_BORDER | wx.WANTS_CHARS)
-    #grid.CreateGrid(3, 121)
-    #return grid
-#Vessels LIST
+ #Vessels LIST
   def OnClose(self,event):
     self._mgr.UnInit()
     del self._mgr
@@ -86,15 +82,25 @@ class AddVessels(wx.Frame):
     self._mgr.AddPane(self.CreateGrid(), aui.AuiPaneInfo().
                       Caption("Vessels").
                       Float().FloatingPosition(self.GetStartPosition()).
-                      FloatingSize(wx.Size(300, 200)).CloseButton(True).MaximizeButton(True))
+                      FloatingSize(wx.Size(340, 300)).CloseButton(True).MaximizeButton(True))
     self._mgr.Update()
   
   def CreateGrid(self):
-    grid = wx.grid.Grid(self, -1, wx.Point(0, 0), wx.Size(150, 250),wx.NO_BORDER | wx.WANTS_CHARS)
-    grid.CreateGrid(121, 3)
+    dvlc = dv.DataViewListCtrl(self)
+    dvlc.AppendTextColumn('Name', width=100)
+    dvlc.AppendTextColumn('Imo', width=100)
+    dvlc.AppendTextColumn('Group number', width=100)
+    self.Sizer = wx.BoxSizer()
+    self.Sizer.Add(dvlc, 1, wx.EXPAND)
+    fff=[]
     for i in db_get_vessels():
-      print i
-    return grid
+      try:
+        fff.append([str(i['name']),str(i['imo']),str(i['groupNumber'])])
+      except KeyError:
+         fff.append([str(i['name']),str(i['imo']),''])
+    for i in fff:
+      dvlc.AppendItem(i)
+    return dvlc
 #Vessels LIST END
    
 if __name__ == '__main__':
