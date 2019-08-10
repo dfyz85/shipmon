@@ -87,6 +87,8 @@ class AddVessels(wx.Frame):
   
   def CreateGrid(self):
     dvlc = dv.DataViewListCtrl(self)
+    number = int()
+    dvlc.AppendTextColumn('id', width=40)
     dvlc.AppendTextColumn('Name', width=100)
     dvlc.AppendTextColumn('Imo', width=100)
     dvlc.AppendTextColumn('Group number', width=100)
@@ -94,12 +96,17 @@ class AddVessels(wx.Frame):
     self.Sizer.Add(dvlc, 1, wx.EXPAND)
     fff=[]
     for i in db_get_vessels():
+      number = number+1
       try:
-        fff.append([str(i['name']),str(i['imo']),str(i['groupNumber'])])
+        fff.append([number,str(i['name']),str(i['imo']),str(i['groupNumber'])])
       except KeyError:
-         fff.append([str(i['name']),str(i['imo']),''])
+         fff.append([number,str(i['name']),str(i['imo']),''])
     for i in fff:
       dvlc.AppendItem(i)
+    #For sort
+    for c in dvlc.Columns:
+            c.Sortable = True
+            c.Reorderable = True
     return dvlc
 #Vessels LIST END
    

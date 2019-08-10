@@ -4,7 +4,7 @@ def deg_to_dms(deg, type='lat'):
         print decimals, number
         d = int(number)
         m = float(decimals * 60)
-        mins, m_int = math.modf(60 * deg)
+        mins = math.modf(60 * deg)
         s = int( 60 * mins )
         compass = {
             'lat': ('N','S'),
