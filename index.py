@@ -1,6 +1,7 @@
 import requests
 import re
 import time
+from datetime import datetime
 import hashlib
 from bs4 import BeautifulSoup
 from databaseconnection import dbInsertVessel, dbVesselsName
@@ -26,18 +27,21 @@ for  i in vesselsName:
     posittionLat = tags[2].find('a', {'class':'details_data_link'}).text.split()[0][:-1]
     posittionLon = tags[2].find('a', {'class':'details_data_link'}).text.split()[2][:-1]
     status = soup.find(text=re.compile("(Moored|Underway Using Engine|Undefined|At Anchor)"))
-    print vesselName, '\n',timeStamp,'\n', status,'\n',posittionLat,' ',posittionLon,'\n',area
-    myHash = hashlib.md5(vesselName+posittionLat+posittionLon).hexdigest()
+    print(vesselName, '\n',timeStamp,'\n', status,'\n',posittionLat,' ',posittionLon,'\n',area)
+    myHash = hashlib.md5(vesselName.encode('utf-8')+posittionLat.encode('utf-8')+posittionLon.encode('utf-8')).hexdigest()
+    reordingTime = datetime.now()
     data = {
         '_id':myHash,
         'vesselName':vesselName,
+        'imo':imo,
         'time':timeStamp, 
         'status':status, 
         'posittionLat':posittionLat, 
         'posittionLon':posittionLon,
-        'area':area
+        'area':area,
+        'reordingTime': str(reordingTime)
     }
     dbInsertVessel(data)
 #Generate .html file
-with open('test.html', 'w') as output_file:
-  output_file.write(r)
+#with open('test.html', 'w') as output_file:
+ # output_file.write(r)

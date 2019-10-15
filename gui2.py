@@ -65,7 +65,7 @@ class AddVessels(wx.Frame):
     self.vessel.Remove(0,-1)
     self.imo.Remove(0,-1)
   
- #Vessels LIST
+#Vessels LIST
   def OnClose(self,event):
     self._mgr.UnInit()
     del self._mgr
