@@ -5,12 +5,13 @@ shipsPossition = brieseDb['shipsPosition']
 vesselsName = brieseDb['shipsData']
 
 def dbVesselsName():
-  return vesselsName.find()
+
+  return vesselsName.find(no_cursor_timeout=True)
 
 def dbInsertVessel(data):
   try:
     shipsPossition.insert_one(data)
   except pymongo.errors.DuplicateKeyError:
-    print 'Dublicate ', data.get('vesselName')
+    print ('Dublicate ', data.get('vesselName'))
 
 
