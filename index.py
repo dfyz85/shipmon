@@ -27,7 +27,7 @@ for  i in vesselsName:
     posittionLat = tags[2].find('a', {'class':'details_data_link'}).text.split()[0][:-1]
     posittionLon = tags[2].find('a', {'class':'details_data_link'}).text.split()[2][:-1]
     status = soup.find(text=re.compile("(Moored|Underway Using Engine|Undefined|At Anchor)"))
-    print(vesselName, '\n',timeStamp,'\n', status,'\n',posittionLat,' ',posittionLon,'\n',area)
+    #print(vesselName, '\n',timeStamp,'\n', status,'\n',posittionLat,' ',posittionLon,'\n',area)
     myHash = hashlib.md5(vesselName.encode('utf-8')+posittionLat.encode('utf-8')+posittionLon.encode('utf-8')).hexdigest()
     reordingTime = datetime.now()
     data = {
