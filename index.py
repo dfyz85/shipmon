@@ -10,6 +10,7 @@ from databaseconnection import dbInsertVessel, dbVesselsName
 
 user = getlogin()
 logging.basicConfig(filename='app.log', filemode='a', format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%d-%b-%y %H:%M:%S')
+logging.info(f"Start by {user}.")
 try:
     vesselsName = dbVesselsName()
     for  i in vesselsName:
@@ -49,6 +50,7 @@ try:
         dbInsertVessel(data)
 except Exception as e:
   logging.error(f"Open by {user}. Vessels name", exc_info=True)
+logging.info(f"Stop by {user}.")
 #Generate .html file
 #with open('test.html', 'w') as output_file:
  # output_file.write(r)
