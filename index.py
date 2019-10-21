@@ -1,5 +1,7 @@
 import requests
 import logging
+import argparse
+import sys
 from os import getlogin
 import re
 import time
@@ -8,9 +10,16 @@ import hashlib
 from bs4 import BeautifulSoup
 from databaseconnection import dbInsertVessel, dbVesselsName
 
+def createParser ():
+    parser = argparse.ArgumentParser()
+    parser.add_argument ('-d', '--delay', default=100, type=int)
+    return parser
+
 user = getlogin()
 logging.basicConfig(filename='app.log', filemode='a', format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%d-%b-%y %H:%M:%S')
 logging.info(f"Start by {user}.")
+parser = createParser()
+namespace = parser.parse_args(sys.argv[1:])
 try:
     vesselsName = dbVesselsName()
     for  i in vesselsName:
@@ -20,7 +29,7 @@ try:
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:64.0) Gecko/20103103 Firefox/64.0'
         }
         #connectTor()
-        time.sleep(10)
+        time.sleep(namespace.delay)
         r = requests.get(url, headers = headers).text.encode('utf-8')
         soup = BeautifulSoup(r,features="lxml")
         vesselName = soup.find('h1',{'class':'font-200 no-margin'}).text
@@ -44,7 +53,7 @@ try:
             'status':status, 
             'posittionLat':posittionLat, 
             'posittionLon':posittionLon,
-            'area':area,
+            'area':area,    
             'reordingTime': str(reordingTime)
         }
         dbInsertVessel(data)

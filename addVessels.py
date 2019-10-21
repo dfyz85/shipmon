@@ -1,4 +1,6 @@
 import pymongo
+import logging
+
 def db_connect(data={}):
   client = pymongo.MongoClient("mongodb://localhost:27017/")
   brieseDb = client['shipsBriese']
@@ -10,7 +12,7 @@ def db_connect(data={}):
   try:
     shipsPossition.insert_one(data)
   except pymongo.errors.DuplicateKeyError:
-    print 'Dublicate ', data.get('vesselName')
+    logging.info('Dublicate ', data.get('vesselName'))
   client.close()
 
 def db_get_vessels():
