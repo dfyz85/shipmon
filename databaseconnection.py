@@ -17,4 +17,15 @@ def dbInsertVessel(data):
      dublicateName = data.get('vesselName')
      logging.info(f'Dublicate {dublicateName}')
 
+def dbEditShipsData():
+  newValues = {
+    "$set": {
+        "type": "scattergeo",
+        "hoverinfo": "text+lon+lat",
+        "text": "Current Position",
+        "mode": "markers",
+        "marker": {"size": 4, "color": "black"}
+    }
+}
+  vesselsName.update_many({},newValues)
 
