@@ -20,9 +20,9 @@ logging.basicConfig(filename='app.log', filemode='a', format='%(asctime)s - %(me
 logging.info(f"Start by {user}.")
 parser = createParser()
 namespace = parser.parse_args(sys.argv[1:])
-try:
-    vesselsName = dbVesselsName()
-    for  i in vesselsName:
+vesselsName = dbVesselsName()
+for  i in vesselsName:
+    try:
         imo = i['imo']
         url = 'https://www.marinetraffic.com/en/ais/details/ships/imo:'+ imo
         #print(url)
@@ -47,7 +47,10 @@ try:
         speed = speedCourse[0]
         course = speedCourse[1]
         draughtTag = soup.find('table',{'class':'table table-striped table-striped-alt table-condensed voyage-related table-aftesnippet table-aftesnippet-primary'})
-        draught = draughtTag.find_all('span', {'class':'text-default'})[0].find('b').text.replace('m','')
+        try:
+            draught = draughtTag.find_all('span', {'class':'text-default'})[0].find('b').text.replace('m','')
+        except AttributeError:
+            draught = None
         #print(draught)
         #print(vesselName, '\n',timeStamp,'\n', status,'\n',posittionLat,' ',posittionLon,'\n',area)
         myHash = hashlib.md5(vesselName.encode('utf-8')+posittionLat.encode('utf-8')+posittionLon.encode('utf-8')).hexdigest()
@@ -67,8 +70,8 @@ try:
             'draught':draught
         }
         dbInsertVessel(data)
-except Exception as e:
-  logging.error(f"Open by {user}. Vessels name", exc_info=True)
+    except Exception as e:
+        logging.error(f"Open by {user}. Vessels name:{vesselName}", exc_info=True)
 logging.info(f"Stop by {user}.")
 #Generate .html file
 #with open('test.html', 'w') as output_file:
