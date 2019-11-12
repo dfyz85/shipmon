@@ -34,6 +34,10 @@ for  i in vesselsName:
         r = requests.get(url, headers = headers).text.encode('utf-8')
         soup = BeautifulSoup(r,features="lxml")
         vesselName = soup.find('h1',{'class':'font-200 no-margin'}).text
+        #if vesselName == "BBC ROMANIA":
+        #    print(soup.find('div',{'160% line-110'}).attrs)
+        arrival = soup.find('div',{'class':'160% line-110 text-default text-light'})['title']
+        departure = soup.find('div',{'160% line-110'})['title']
         timeStamp = soup.find('div',{'class':'table-cell cell-full collapse-768'}).find('div', {'class':'group-ib'}).find('strong').text.split('(')[0].replace('utc','')
         if 'ago' in timeStamp:
             timeStamp = soup.find('div',{'class':'table-cell cell-full collapse-768'}).find('div', {'class':'group-ib'}).find('strong').text.split('(')[1].replace('utc','')
@@ -67,7 +71,9 @@ for  i in vesselsName:
             'reordingTime': str(reordingTime),
             'speed':speed,
             'course':course,
-            'draught':draught
+            'draught':draught,
+            'departure':departure,
+            'arrival':arrival
         }
         dbInsertVessel(data)
     except Exception as e:
