@@ -119,6 +119,7 @@ for  i in vesselsName:
             timeStamp = str(reordingTime)[:-10]
         # JS-code data = new Date("2019-07-14 18:30")
         area = rPosition['areaCode']
+        areaName = rPosition['areaName']
         posittionLat = rPosition['lat']
         posittionLon = rPosition['lon']
         status = rPosition['shipStatus']
@@ -128,16 +129,17 @@ for  i in vesselsName:
             draught = round(rDetails['draughtReported'],2)
         #print(draught)
         #print(vesselName, '\n',timeStamp,'\n', status,'\n',posittionLat,' ',posittionLon,'\n',area)
-        myHash = hashlib.md5(vesselName.encode('utf-8')+str(posittionLat).encode('utf-8')+str(posittionLon).encode('utf-8')).hexdigest()
+        myHash = hashlib.md5(vesselName.encode('utf-8')+str(posittionLat).encode('utf-8')+str(posittionLon).encode('utf-8')+str(timeStamp)[:10].encode('utf-8')).hexdigest()
         data = {
             '_id':myHash,
             'vesselName':vesselName,
-            'imo':imo,
+            'imo':i['_id'],
             'time':timeStamp, 
             'status':status, 
             'posittionLat':posittionLat, 
             'posittionLon':posittionLon,
-            'area':area,    
+            'area':area,
+            'areaName':areaName,   
             'reordingTime': str(reordingTime),
             'speed':speed,
             'course':course,
@@ -147,8 +149,8 @@ for  i in vesselsName:
             'atd':atd,
             'eta':eta
         }
-        print(data)
-        #dbInsertVessel(data)
+        #print(data)
+        dbInsertVessel(data)
     except Exception as e:
         logging.error(f"Open by {user}. Vessels name:{vesselName}", exc_info=True)
 logging.info(f"Stop by {user}.")
