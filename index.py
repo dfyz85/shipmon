@@ -116,9 +116,9 @@ for  i in vesselsName:
         if rDetails['departurePort']:
             departure =  f"{rDetails['departurePort']['name']} [{rDetails['departurePort']['countryCode']}]"
             if rDetails['departurePort']['timestamp']:
-                atd =  str(datetime.fromtimestamp(rDetails['departurePort']['timestamp']))     
+                atd =  str(datetime.fromtimestamp(rDetails['departurePort']['timestamp']))
         timeStamp = str(datetime.fromtimestamp(rPosition['lastPos']))
-        if 'ago' or 'now' in str(timeStamp).lower():
+        if 'now' in str(timeStamp).lower():
             timeStamp = str(reordingTime)[:-10]
         # JS-code data = new Date("2019-07-14 18:30")
         area = rPosition['areaCode']
