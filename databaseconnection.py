@@ -6,6 +6,10 @@ client = pymongo.MongoClient("mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vrye
 brieseDb = client['shipsBriese']
 shipsPossition = brieseDb['shipsPosition'] 
 vesselsName = brieseDb['shipsData']
+# Update new BD
+#clientLocal = pymongo.MongoClient("mongodb://127.0.0.1:27017/",serverSelectionTimeoutMS=90000)
+#brieseDbLocal = clientLocal['shipBrieseBckUp']
+#shipsPossitionLocal = brieseDbLocal['shipsPosition'] 
 
 def dbVesselsName():
   pipeline = [
@@ -19,6 +23,8 @@ def dbVesselsName():
     {"$sort":SON([("count", 1)])}
   ]
   db = shipsPossition.aggregate(pipeline)
+  #Update new BD
+  #db = shipsPossitionLocal.aggregate(pipeline)
   return db
 
 def dbInsertVessel(data):
