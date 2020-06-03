@@ -4,7 +4,8 @@ from bson.son import SON
 
 client = pymongo.MongoClient("mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority")
 brieseDb = client['shipsBriese']
-shipsPossition = brieseDb['shipsPosition'] 
+shipsPossition = brieseDb['shipsPosition']
+shipsPossitionNow = brieseDb['shipsPositionNow'] 
 vesselsName = brieseDb['shipsData']
 # Update new BD
 #clientLocal = pymongo.MongoClient("mongodb://127.0.0.1:27017/",serverSelectionTimeoutMS=90000)
@@ -33,6 +34,7 @@ def dbInsertVessel(data):
   except pymongo.errors.DuplicateKeyError:
      dublicateName = data.get('vesselName')
      logging.info(f'Dublicate {dublicateName}')
+  shipsPossitionNow.replace_one({'vesselName': data['vesselName']},data)
 
 def dbEditShipsData():
   newValues = {
@@ -45,7 +47,6 @@ def dbEditShipsData():
     }
 }
   vesselsName.update_many({},newValues)
-
 
 # db = dbVesselsName() 
 # for i in db:
