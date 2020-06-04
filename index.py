@@ -172,8 +172,26 @@ for  i in vesselsName:
             'atd':atd,
             'eta':eta
         }
+        replaceData = {
+            'vesselName':vesselName,
+            'imo':i['_id'],
+            'time':timeStamp, 
+            'status':status, 
+            'posittionLat':posittionLat, 
+            'posittionLon':posittionLon,
+            'area':area,
+            'areaName':areaName,   
+            'reordingTime': str(reordingTime),
+            'speed':speed,
+            'course':course,
+            'draught':draught,
+            'departure':departure,
+            'arrival':arrival,
+            'atd':atd,
+            'eta':eta
+        }
         #print(data)
-        dbInsertVessel(data)
+        dbInsertVessel(data,replaceData)
     except Exception as e:
         logging.error(f"Open by {user}. Vessels name:{vesselName}", exc_info=True)
 logging.info(f"Stop by {user}.")

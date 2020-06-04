@@ -28,13 +28,13 @@ def dbVesselsName():
   #db = shipsPossitionLocal.aggregate(pipeline)
   return db
 
-def dbInsertVessel(data):
+def dbInsertVessel(data,replaceData):
   try:
     shipsPossition.insert_one(data)
   except pymongo.errors.DuplicateKeyError:
      dublicateName = data.get('vesselName')
      logging.info(f'Dublicate {dublicateName}')
-  shipsPossitionNow.replace_one({'vesselName': data['vesselName']},data)
+  shipsPossitionNow.replace_one({'imo': replaceData['imo']},replaceData)
 
 def dbEditShipsData():
   newValues = {
