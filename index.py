@@ -9,7 +9,8 @@ import time
 from datetime import datetime
 import hashlib
 from bs4 import BeautifulSoup
-from databaseconnection import dbInsertVessel, dbVesselsName
+import pandas as pd
+from databaseconnection import dbInsertVessel, dbVesselsName, dbGetCountryCode
 #TIME DELAY
 def createParser ():
     parser = argparse.ArgumentParser()
@@ -24,6 +25,10 @@ logging.info(f"Start by {user}.")
 parser = createParser()
 namespace = parser.parse_args(sys.argv[1:])
 #TIME DELAY
+#COUNTRY CODE DB DOWNLOAD
+data = dbGetCountryCode()
+dfCountryCode = pd.DataFrame(data)
+#COUNTRY CODE DB DOWNLOAD
 vesselsName = dbVesselsName()
 shipsId = {
     '9513622': '365335',
@@ -128,11 +133,15 @@ for  i in vesselsName:
         urlDetails = 'https://www.marinetraffic.com/vesselDetails/voyageInfo/shipid:'+imo
         rDetails = requests.get(urlDetails, headers = headers).json()
         if rDetails['arrivalPort']:
-            arrival =  f"{rDetails['arrivalPort']['name']} [{rDetails['arrivalPort']['countryCode']}]"
+            countryCodeArrival = str(rDetails['arrivalPort']['countryCode'])
+            countryNameArrival = dfCountryCode.loc[dfCountryCode['alpha2'] == countryCodeArrival]['country'].values
+            arrival =  f"{rDetails['arrivalPort']['name']} [{str(countryNameArrival[0])}]"
             if rDetails['arrivalPort']['timestamp']:
                 eta =  str(datetime.fromtimestamp(rDetails['arrivalPort']['timestamp']))
         if rDetails['departurePort']:
-            departure =  f"{rDetails['departurePort']['name']} [{rDetails['departurePort']['countryCode']}]"
+            countryCodeDeparture = str(rDetails['departurePort']['countryCode'])
+            countryNameDeparture = dfCountryCode.loc[dfCountryCode['alpha2'] == countryCodeDeparture]['country'].values
+            departure =  f"{rDetails['departurePort']['name']} [{str(countryNameDeparture[0])}]"
             if rDetails['departurePort']['timestamp']:
                 atd =  str(datetime.fromtimestamp(rDetails['departurePort']['timestamp']))
         if rDetails['draughtReported']:
