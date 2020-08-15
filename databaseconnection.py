@@ -35,9 +35,9 @@ def dbInsertVessel(data,replaceData):
   except pymongo.errors.DuplicateKeyError:
      dublicateName = data.get('vesselName')
      logging.info(f'Dublicate {dublicateName}')
-  #shipsPossitionNow.replace_one({'imo': replaceData['imo']},replaceData)
+  shipsPossitionNow.replace_one({'imo': replaceData['imo']},replaceData)
   #update empty db
-  shipsPossitionNow.insert_one(data)
+  #shipsPossitionNow.insert_one(data)
 
 def dbEditShipsData():
   newValues = {
