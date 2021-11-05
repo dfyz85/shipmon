@@ -9,9 +9,9 @@ shipsPossitionNow = brieseDb['shipsPositionNow']
 vesselsName = brieseDb['shipsData']
 countryCode = brieseDb['countryCode']
 # Update new BD
-#clientLocal = pymongo.MongoClient("mongodb://127.0.0.1:27017/",serverSelectionTimeoutMS=90000)
-#brieseDbLocal = clientLocal['shipBrieseBckUp']
-#shipsPossitionLocal = brieseDbLocal['shipsPosition'] 
+# clientLocal = pymongo.MongoClient("mongodb://127.0.0.1:27017/",serverSelectionTimeoutMS=90000)
+# brieseDbLocal = clientLocal['shipBrieseBckUp']
+# shipsPossitionLocal = brieseDbLocal['shipsPosition'] 
 
 def dbVesselsName():
   pipeline = [
@@ -26,7 +26,7 @@ def dbVesselsName():
   ]
   db = shipsPossition.aggregate(pipeline)
   #Update new BD
-  #db = shipsPossitionLocal.aggregate(pipeline)
+  # db = shipsPossitionLocal.aggregate(pipeline)
   return db
 
 def dbInsertVessel(data,replaceData):
@@ -37,7 +37,16 @@ def dbInsertVessel(data,replaceData):
      logging.info(f'Dublicate {dublicateName}')
   shipsPossitionNow.replace_one({'imo': replaceData['imo']},replaceData)
   #update empty db
-  #shipsPossitionNow.insert_one(data)
+  # shipsPossitionNow.insert_one(data)
+
+def dbInsertNewVessel(data):
+  try:
+    shipsPossition.insert_one(data)
+  except pymongo.errors.DuplicateKeyError:
+     dublicateName = data.get('vesselName')
+     logging.info(f'Dublicate {dublicateName}')
+  #update empty db
+  shipsPossitionNow.insert_one(data)
 
 def dbEditShipsData():
   newValues = {
