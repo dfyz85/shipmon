@@ -3,16 +3,17 @@ import logging
 import argparse
 import sys
 from os import getlogin
+import time
 #import brotli
 import re
 import time
 from datetime import datetime
 import hashlib
-from bs4 import BeautifulSoup
+
 import pandas as pd
 from databaseconnection import dbInsertVessel, dbVesselsName, dbGetCountryCode
-from const import SHIPS_ID_MARINE
-#TIME DELAY
+from const import SHIPS_ID_MARINE, SHIPS_ID_SHIPSINFO
+from toolsShipsInfo import getDataShipsInfo, compareTwoDates
 def createParser ():
     parser = argparse.ArgumentParser()
     parser.add_argument ('-d', '--delay', default=0, type=int)
@@ -32,17 +33,15 @@ dfCountryCode = pd.DataFrame(data)
 #COUNTRY CODE DB DOWNLOAD
 vesselsName = dbVesselsName()
 shipsId = SHIPS_ID_MARINE
+shipsIdInfo = SHIPS_ID_SHIPSINFO
 headers = {
             'Host':	'www.marinetraffic.com',
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0',
             'Accept': '*/*',
             'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-            #'Accept-Encoding': 'gzip, deflate,',
             'X-Requested-With': 'XMLHttpRequest',
             'DNT': '1',
             'Connection': 'keep-alive',
-            #'Referer': 'https://www.marinetraffic.com/en/ais/details/ships/shipid:365335/vessel:BBC%20LIMA',
-            #'Cookie':'_ga=GA1.2.395253674.1437139472; __atuvc=0%7C42%2C26%7C43%2C0%7C44%2C0%7C45%2C10%7C46; __atssc=google%3B17; __hstc=153128807.1e7f97c74a950808d850ae602ebaea4f.1516606452153.1573590744826.1577301361670.25; hubspotutk=1e7f97c74a950808d850ae602ebaea4f; __zlcmid=qchyoos9UHeJXq; __cfduid=d354d627fc06eecbac8ad398ba5a5b16b1560189640; _hjid=59d845fa-caad-43bb-8e30-6ca2bd4c2c89; _fbp=fb.1.1571665909504.2045023531; __gads=ID=59ef9a5d4a2498e6:T=1571755513:S=ALNI_MZbFmVyAZ2zHTEZUXweYDLvsrL-BA; _gaexp=GAX1.2.gqwNE1cuQkmlx_ZHXmcLZg.18279.1; SERVERID=app4; vTo=1; hsfirstvisit=; __hssrc=1; dmxRegion=false; CAKEPHP=3f0o3uctpodu805hit2s0gf3ag; AUTH=EMAIL=pythonsev@gmail.com&CHALLENGE=RQ1pziOwRO489MQIky1e; mt_user[UserID]=2285832; _gid=GA1.2.1262382283.1577301354; _cmpQcif3pcsupported=1; __hssc=153128807.16.1577301361670; _gat=1',
             'TE': 'Trailers',
          }
 # xxx = {}
@@ -71,21 +70,33 @@ headers = {
 # print(xxx)      
 for  i in vesselsName:
     try:
+        time.sleep(3)
         reordingTime = datetime.now()
-        imo = shipsId.pop(str(i['_id']))
-        urlPosition = 'https://www.marinetraffic.com/vesselDetails/latestPosition/shipid:'+imo
+        marineTrafficId = shipsId.pop(str(i['_id']))
+        imo = i['_id']
+        vesselName = str(i['vesselName'])
+        mmsi = shipsIdInfo[imo]
+        urlPosition = 'https://www.marinetraffic.com/vesselDetails/latestPosition/shipid:'+marineTrafficId
+        rPositionShipINfo = getDataShipsInfo(imo, mmsi)
         rPosition = requests.get(urlPosition, headers = headers).json()
-        area = rPosition['areaCode']
-        areaName = rPosition['areaName']
-        posittionLat = rPosition['lat']
-        posittionLon = rPosition['lon']
-        status = rPosition['shipStatus']
-        speed = rPosition['speed']
-        course = rPosition['course']
         timeStamp = str(datetime.fromtimestamp(rPosition['lastPos']))
         if 'now' in str(timeStamp).lower():
             timeStamp = str(reordingTime)[:-10]
-        urlDetails = 'https://www.marinetraffic.com/vesselDetails/voyageInfo/shipid:'+imo
+        if compareTwoDates(rPositionShipINfo['time'], timeStamp):
+            posittionLat = rPositionShipINfo['posittionLat']
+            posittionLon = rPositionShipINfo['posittionLon']
+            speed = rPositionShipINfo['speed']
+            course = rPositionShipINfo['course']
+            timeStamp = rPositionShipINfo['time']
+        else:
+            posittionLat = rPosition['lat']
+            posittionLon = rPosition['lon']
+            speed = rPosition['speed']
+            course = rPosition['course']
+        area = rPosition['areaCode']
+        areaName = rPosition['areaName']
+        status = rPosition['shipStatus']
+        urlDetails = 'https://www.marinetraffic.com/vesselDetails/voyageInfo/shipid:'+marineTrafficId
         rDetails = requests.get(urlDetails, headers = headers).json()
         if rDetails['arrivalPort']:
             countryCodeArrival = str(rDetails['arrivalPort']['countryCode'])
@@ -105,7 +116,7 @@ for  i in vesselsName:
         # urlInfo = 'https://www.marinetraffic.com/en/vesselDetails/vesselInfo/shipid:'+imo
         # rInfo = requests.get(urlInfo, headers = headers).json()
         # vesselName = rInfo['name']
-        vesselName = str(i['vesselName'])
+       
         #print(url)
         #connectTor()
         #TIME DELAY
@@ -154,11 +165,7 @@ for  i in vesselsName:
             'atd':atd,
             'eta':eta
         }
-        #print(data)
         dbInsertVessel(data,replaceData)
     except Exception as e:
         logging.error(f"Open by {user}. Vessels name:{vesselName}", exc_info=True)
 logging.info(f"Stop by {user}.")
-#Generate .html file
-#with open('test.html', 'w') as output_file:
- # output_file.write(r)
