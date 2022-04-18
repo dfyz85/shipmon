@@ -1,8 +1,10 @@
 import pymongo
 import logging
 from bson.son import SON
+import certifi
 
-client = pymongo.MongoClient("mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority")
+MONGO_URI = "mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority"
+client = pymongo.MongoClient(MONGO_URI,tlsCAFile=certifi.where())
 brieseDb = client['shipsBriese']
 shipsPossition = brieseDb['shipsPosition']
 shipsPossitionNow = brieseDb['shipsPositionNow'] 
