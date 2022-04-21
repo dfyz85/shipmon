@@ -11,16 +11,18 @@ brieseDb = client['shipsBriese']
 shipsPossition = brieseDb['shipsPosition']
 brieseDbBU = client['shipsBrieseBU']
 shipsPossitionBU = brieseDbBU['positionVessel']
+shipsData = brieseDb['shipsData']
+shipsDataBU = brieseDbBU['shipsData']
 count = 0 
 
-shipsPossitionBU.delete_many({})
-print("BU  empty")
+shipsDataBU.delete_many({})
+print("Ships data BU  empty")
 
-# for item in shipsPossition.find():
-#     shipsPossitionBU.insert_one(item)
-    # count += 1
-    # sys.stdout.write(f'Write progress: {count}   \r' )
-    # sys.stdout.flush()
+for item in shipsData.find():
+    shipsDataBU.insert_one(item)
+    count += 1
+    sys.stdout.write(f'Write progress: {count}   \r' )
+    sys.stdout.flush()
 # shipsPossitionBU.delete_many({})
 
 # cursor = shipsPossition.find()

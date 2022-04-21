@@ -6,7 +6,7 @@ import certifi
 MONGO_URI = "mongodb://dfyz:rtyfghvbn65@briese-shard-00-00-vryeg.mongodb.net:27017,briese-shard-00-01-vryeg.mongodb.net:27017,briese-shard-00-02-vryeg.mongodb.net:27017/test?ssl=true&replicaSet=briese-shard-0&authSource=admin&retryWrites=true&w=majority"
 client = pymongo.MongoClient(MONGO_URI,tlsCAFile=certifi.where())
 brieseDb = client['shipsBriese']
-shipsPossition = brieseDb['shipsPosition']
+shipsPossition = brieseDb['shipsPositionNow']
 shipsPossitionNow = brieseDb['shipsPositionNow'] 
 vesselsName = brieseDb['shipsData']
 countryCode = brieseDb['countryCode']
@@ -20,11 +20,10 @@ def dbVesselsName():
     {"$group":
         {
           "_id": "$imo",
-          "count":SON([("$sum",1)]),
           "vesselName":{"$first":"$vesselName"}
         } 
     },
-    {"$sort":SON([("count", 1)])}
+    {"$sort": SON([("reordingTime", -1)])}
   ]
   db = shipsPossition.aggregate(pipeline)
   #Update new BD
