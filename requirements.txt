@@ -3,7 +3,7 @@ bs4==0.0.1
 certifi==2021.10.8
 charset-normalizer==2.0.12
 idna==3.3
-lxml==4.8.0
+lxml==4.9.1
 numpy==1.22.3
 pandas==1.4.2
 pymongo==4.1.0
