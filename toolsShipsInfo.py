@@ -37,8 +37,8 @@ def getDataShipsInfo(imo, mmsi):
             'time':dataArray[0], 
             'posittionLat':dataArray[1], 
             'posittionLon':dataArray[2],
-            'speed':dataArray[4],
-            'course':dataArray[3], 
+            'speed':dataArray[4].replace(':',''),
+            'course':dataArray[3].replace(':',''), 
         }
         return dataDict
     except Exception as e:
