@@ -6,9 +6,9 @@ import hashlib
 from bs4 import BeautifulSoup
 from databaseconnection import dbInsertNewVessel, dbInsertNewDataVessel
 
-VESSEL_NAME = 'BBC MARS'
-IMO = 9947770
-MARINE_ID = 7166393
+VESSEL_NAME = 'BBC ALASKA'
+IMO = 9453793
+MARINE_ID = 758469
 
 def addDataVessel(imo,name):
     data = {
