@@ -1,6 +1,6 @@
 {  
-    "name" : "BBC MICHIGAN", 
-    "imo" : "9501241", 
+    "name" : "BBC SEBASTOPOL", 
+    "imo" : "9812004", 
     "hoverinfo" : "text+lon+lat", 
     "marker" : {
         "size" : NumberInt(4), 

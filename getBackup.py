@@ -61,7 +61,7 @@ def get_backup_file(data_colection,name_db):
     df =  pd.DataFrame(list(cursor))
     df.to_csv(f'{name_db}_{TODAY}.csv', index=True)
 
-#get_backup_file(shipsPossitionNow,'PossitionNow')
+# get_backup_file(shipsPossitionNow,'PossitionNow')
 # get_backup_file(shipsPossition, 'Possition')
-# clean_data_colection(shipsPossitionNow)
+clean_data_colection(shipsPossition)
 # setShipsPossitionNow()

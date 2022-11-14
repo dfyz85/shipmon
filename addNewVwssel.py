@@ -1,18 +1,34 @@
 import requests
-import logging
-import argparse
-import sys
 from os import getlogin
 #import brotli
-import re
-import time
 from datetime import datetime
 import hashlib
 from bs4 import BeautifulSoup
-from databaseconnection import dbInsertNewVessel
+from databaseconnection import dbInsertNewVessel, dbInsertNewDataVessel
 
-IMO = 9811983
-MARINE_ID = 6840365
+VESSEL_NAME = 'BBC MARS'
+IMO = 9947770
+MARINE_ID = 7166393
+
+def addDataVessel(imo,name):
+    data = {
+        "_id": imo,
+        "name": name,
+        "imo": imo,
+        "hoverinfo": "text+lon+lat",
+        "marker": {
+            "size": 4,
+            "color": "black"
+        },
+        "mode": "markers",
+        "text": "Current Position",
+        "type": "scattergeo",
+        "registerLast": "",
+        "registerNext": "",
+        "registerType": ""
+    }
+    dbInsertNewDataVessel(data)
+
 def addVessel(imo,id): 
   try:
         reordingTime = datetime.now()
@@ -87,4 +103,5 @@ def addVessel(imo,id):
         dbInsertNewVessel(data)
   except Exception as e:
     print(e)
+addDataVessel(str(IMO),VESSEL_NAME)
 addVessel(str(IMO),str(MARINE_ID))

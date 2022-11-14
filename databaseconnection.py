@@ -51,6 +51,9 @@ def dbInsertNewVessel(data):
   #update empty db
   shipsPossitionNow.insert_one(data)
 
+def dbInsertNewDataVessel(data):
+    vesselsName.insert_one(data)
+
 def dbEditShipsData():
   newValues = {
     "$set": {
